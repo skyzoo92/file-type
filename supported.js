@@ -351,5 +351,5 @@ module.exports = {
 	'application/vnd.ms-powerpoint.presentation.macroenabled.12',
 	'application/java-archive',
 	'application/vnd.rn-realmedia',
-];
+]
 }
