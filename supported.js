@@ -1,5 +1,7 @@
+'use strict';
+
 module.exports = {
-const extensions = [
+    extensions: [
 	'jpg',
 	'png',
 	'apng',
@@ -177,7 +179,7 @@ const extensions = [
 	'ppsx',
 ];
 
- const mimeTypes = [
+ mimeTypes: [
 	'image/jpeg',
 	'image/png',
 	'image/gif',
