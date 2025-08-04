@@ -1,6 +1,6 @@
 {
 	"name": "@kelvdra/file-type",
-	"version": "1.1.1",
+	"version": "1.1.0",
 	"description": "Detect the file type of a file, stream, or data",
 	"license": "MIT",
 	"repository": "sindresorhus/file-type",
