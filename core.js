@@ -11,7 +11,8 @@ const {stringToBytes,
 	uint32SyncSafeToken,} = require('./util.js');
 const {extensions, mimeTypes} = require('./supported.js');
 
-exports.reasonableDetectionSizeInBytes = 4100; // A fair amount of file-types are detectable within this range.
+const reasonableDetectionSizeInBytes = 4100; // A fair amount of file-types are detectable within this range.
+exports.reasonableDetectionSizeInBytes = reasonableDetectionSizeInBytes
 
 exports.fileTypeFromStream = (stream, options) => {
 	return new FileTypeParser(options).fromStream(stream);
