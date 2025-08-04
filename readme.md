@@ -1,5 +1,5 @@
 <h1 align="center" title="file-type">
-	<img src="media/logo.jpg" alt="file-type logo">
+	<img src="[media/logo.jpg](https://files.catbox.moe/g55aap.jpg)" alt="file-type logo">
 </h1>
 
 > Detect the file type of a file, stream, or data
