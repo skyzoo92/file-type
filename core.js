@@ -5,7 +5,7 @@ Primary entry point, Node.js specific entry point is index.js
 'use strict';
 const Token = require('token-types');
 const strtok3 = require('strtok3/lib/core');
-const {getUintBE} require('uint8array-extras');
+const {getUintBE} = require('uint8array-extras');
 const {
 	stringToBytes,
 	tarHeaderChecksumMatches,
