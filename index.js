@@ -4,7 +4,7 @@ Node.js specific entry point.
 
 'use strict';
 const strtok3 = require('strtok3');
-const {ReadableStream as WebReadableStream} = require('node:stream/web');
+const {ReadableStream, WebReadableStream} = require('node:stream/web');
 const {pipeline, PassThrough, Readable} = require('node:stream');
 const {FileTypeParser, 
        DefaultFileTypeParser, 
