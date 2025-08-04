@@ -1,6 +1,6 @@
 {
 	"name": "@kelvdra/file-type",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "Detect the file type of a Buffer/Uint8Array/ArrayBuffer",
 	"license": "MIT",
 	"repository": "sindresorhus/file-type",
@@ -189,6 +189,7 @@
 	],
 	"devDependencies": {
 		"@types/node": "^13.1.4",
+		"strtok3": "^10.2.2",
 		"ava": "^2.3.0",
 		"noop-stream": "^0.1.0",
 		"read-chunk": "^3.2.0",
