@@ -176,8 +176,8 @@ module.exports = {
 	'jar',
 	'rm',
 	'ppsm',
-	'ppsx',
-];
+	'ppsx'
+]
 
  mimeTypes: [
 	'image/jpeg',
