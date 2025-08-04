@@ -1836,6 +1836,6 @@ exports.fileTypeStream = (webStream, options) => {
 	}
 }
 
-module.exports = FileTypeParser
+exports.FileTypeParser = FileTypeParser
 exports.supportedExtensions = new Set(extensions);
 exports.supportedMimeTypes = new Set(mimeTypes);
