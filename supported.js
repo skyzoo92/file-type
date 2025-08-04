@@ -177,7 +177,7 @@ module.exports = {
 	'rm',
 	'ppsm',
 	'ppsx'
-]
+],
 
  mimeTypes: [
 	'image/jpeg',
