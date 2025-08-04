@@ -5,7 +5,13 @@ Node.js specific entry point.
 const { ReadableStream: WebReadableStream } = require('node:stream/web');
 const { pipeline, PassThrough, Readable } = require('node:stream');
 const strtok3 = require('strtok3');
-const { FileTypeParser: DefaultFileTypeParser, reasonableDetectionSizeInBytes } = require('./core.js');
+const { FileTypeParser: DefaultFileTypeParser,
+        reasonableDetectionSizeInBytes, 
+        fileTypeFromTokenizer,
+	fileTypeFromBuffer,
+	fileTypeFromBlob,
+	supportedMimeTypes,
+	supportedExtensions } = require('./core.js');
 
  class MyFileTypeParser extends DefaultFileTypeParser {
 	async fromStream(stream) {
@@ -84,5 +90,5 @@ module.exports = {
 	fileTypeFromBuffer,
 	fileTypeFromBlob,
 	supportedMimeTypes,
-	supportedExtensions,
-} require('./core.js')
+	supportedExtensions
+} 
