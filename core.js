@@ -13,15 +13,15 @@ const {extensions, mimeTypes} = require('./supported.js');
 
 exports.seasonableDetectionSizeInBytes = 4100; // A fair amount of file-types are detectable within this range.
 
-exports.fileTypeFromStream(stream, options) {
+exports.fileTypeFromStream = (stream, options) => {
 	return new FileTypeParser(options).fromStream(stream);
 }
 
-exports.fileTypeFromBuffer(input, options) {
+exports.fileTypeFromBuffer = (input, options) => {
 	return new FileTypeParser(options).fromBuffer(input);
 }
 
-exports.fileTypeFromBlob(blob, options) {
+exports.fileTypeFromBlob = (blob, options) => {
 	return new FileTypeParser(options).fromBlob(blob);
 }
 
@@ -178,11 +178,11 @@ function _check(buffer, headers, options) {
 	return true;
 }
 
-exports.fileTypeFromTokenizer(tokenizer, options) {
+exports.fileTypeFromTokenizer = (tokenizer, options) => {
 	return new FileTypeParser(options).fromTokenizer(tokenizer);
 }
 
-exports.fileTypeStream(webStream, options) {
+exports.fileTypeStream = (webStream, options) => {
 	return new FileTypeParser(options).toDetectionStream(webStream, options);
 }
 
