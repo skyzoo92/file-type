@@ -6,9 +6,10 @@ Node.js specific entry point.
 const strtok3 = require('strtok3');
 const {ReadableStream as WebReadableStream} = require('node:stream/web');
 const {pipeline, PassThrough, Readable} = require('node:stream');
-const {FileTypeParser as DefaultFileTypeParser, 
-    reasonableDetectionSizeInBytes, 
-    fileTypeFromTokenizer,
+const {FileTypeParser, 
+       DefaultFileTypeParser, 
+       reasonableDetectionSizeInBytes, 
+       fileTypeFromTokenizer,
 	fileTypeFromBuffer,
 	fileTypeFromBlob,
 	supportedMimeTypes,
