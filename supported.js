@@ -1,7 +1,5 @@
-'use strict';
-
 module.exports = {
-  extensions = [
+const extensions = [
 	'jpg',
 	'png',
 	'apng',
@@ -177,12 +175,9 @@ module.exports = {
 	'rm',
 	'ppsm',
 	'ppsx',
-	'tar.gz',
-	'reg',
-	'dat',
 ];
 
-    mimeTypes = [
+ const mimeTypes = [
 	'image/jpeg',
 	'image/png',
 	'image/gif',
@@ -354,8 +349,5 @@ module.exports = {
 	'application/vnd.ms-powerpoint.presentation.macroenabled.12',
 	'application/java-archive',
 	'application/vnd.rn-realmedia',
-	'application/x-ms-regedit',
-	'application/x-ft-windows-registry-hive',
 ];
-
 }

@@ -1,30 +1,27 @@
 /**
 Primary entry point, Node.js specific entry point is index.js
 */
-
 'use strict';
 const Token = require('token-types');
-const strtok3 = require('strtok3/lib/core');
+const strtok3 = require('strtok3/core');
+const {ZipHandler} = require('@tokenizer/inflate');
 const {getUintBE} = require('uint8array-extras');
-const {
-	stringToBytes,
+const {stringToBytes,
 	tarHeaderChecksumMatches,
-	uint32SyncSafeToken
-} = require('./util');
-const supported = require('./supported');
-const {ZipHandler, GzipHandler} = require('@tokenizer/inflate');
+	uint32SyncSafeToken,} = require('./util.js');
+const {extensions, mimeTypes} = require('./supported.js');
 
-const reasonableDetectionSizeInBytes = 4100; // A fair amount of file-types are detectable within this range.
+exports.seasonableDetectionSizeInBytes = 4100; // A fair amount of file-types are detectable within this range.
 
-async function fileTypeFromStream(stream, options) {
+exports.fileTypeFromStream(stream, options) {
 	return new FileTypeParser(options).fromStream(stream);
 }
 
-async function fileTypeFromBuffer(input, options) {
+exports.fileTypeFromBuffer(input, options) {
 	return new FileTypeParser(options).fromBuffer(input);
 }
 
-async function fileTypeFromBlob(blob, options) {
+exports.fileTypeFromBlob(blob, options) {
 	return new FileTypeParser(options).fromBlob(blob);
 }
 
@@ -181,15 +178,15 @@ function _check(buffer, headers, options) {
 	return true;
 }
 
-async function fileTypeFromTokenizer(tokenizer, options) {
+exports.fileTypeFromTokenizer(tokenizer, options) {
 	return new FileTypeParser(options).fromTokenizer(tokenizer);
 }
 
-async function fileTypeStream(webStream, options) {
+exports.fileTypeStream(webStream, options) {
 	return new FileTypeParser(options).toDetectionStream(webStream, options);
 }
 
-  class FileMyParser {
+  class FileTypeParser {
 	constructor(options) {
 		this.options = {
 			mpegOffsetTolerance: 0,
@@ -235,16 +232,11 @@ async function fileTypeStream(webStream, options) {
 	}
 
 	async fromBlob(blob) {
-		const tokenizer = strtok3.fromBlob(blob, this.tokenizerOptions);
-		try {
-			return await this.fromTokenizer(tokenizer);
-		} finally {
-			await tokenizer.close();
-		}
+		return this.fromStream(blob.stream());
 	}
 
 	async fromStream(stream) {
-		const tokenizer = strtok3.fromWebStream(stream, this.tokenizerOptions);
+		const tokenizer = await strtok3.fromWebStream(stream, this.tokenizerOptions);
 		try {
 			return await this.fromTokenizer(tokenizer);
 		} finally {
@@ -302,7 +294,7 @@ async function fileTypeStream(webStream, options) {
 	}
 
 	checkString(header, options) {
-		return this.check(stringToBytes(header, options?.encoding), options);
+		return this.check(stringToBytes(header), options);
 	}
 
 	// Detections with a high degree of certainty in identifying the correct file type
@@ -316,7 +308,7 @@ async function fileTypeStream(webStream, options) {
 
 		this.tokenizer = tokenizer;
 
-		await tokenizer.peekBuffer(this.buffer, {length: 32, mayBeLess: true});
+		await tokenizer.peekBuffer(this.buffer, {length: 12, mayBeLess: true});
 
 		// -- 2-byte signatures --
 
@@ -414,21 +406,6 @@ async function fileTypeStream(webStream, options) {
 		}
 
 		if (this.check([0x1F, 0x8B, 0x8])) {
-			const gzipHandler = new GzipHandler(tokenizer);
-
-			const stream = gzipHandler.inflate();
-			try {
-				const compressedFileType = await this.fromStream(stream);
-				if (compressedFileType && compressedFileType.ext === 'tar') {
-					return {
-						ext: 'tar.gz',
-						mime: 'application/gzip',
-					};
-				}
-			} finally {
-				await stream.cancel();
-			}
-
 			return {
 				ext: 'gz',
 				mime: 'application/gzip',
@@ -953,13 +930,6 @@ async function fileTypeStream(webStream, options) {
 			};
 		}
 
-		if (this.checkString('regf')) {
-			return {
-				ext: 'dat',
-				mime: 'application/x-ft-windows-registry-hive',
-			};
-		}
-
 		// -- 5-byte signatures --
 
 		if (this.check([0x4F, 0x54, 0x54, 0x4F, 0x00])) {
@@ -1311,15 +1281,6 @@ async function fileTypeStream(webStream, options) {
 			}
 		}
 
-		// -- 10-byte signatures --
-
-		if (this.checkString('REGEDIT4\r\n')) {
-			return {
-				ext: 'reg',
-				mime: 'application/x-ms-regedit',
-			};
-		}
-
 		// -- 12-byte signatures --
 
 		// RIFF file format which might be AVI, WAV, QCP, etc
@@ -1480,8 +1441,8 @@ async function fileTypeStream(webStream, options) {
 			};
 		}
 
-		if (this.check([0xFE, 0xFF])) { // UTF-16-BOM-BE
-			if (this.checkString('<?xml ', {offset: 2, encoding: 'utf-16be'})) {
+		if (this.check([0xFE, 0xFF])) { // UTF-16-BOM-LE
+			if (this.check([0, 60, 0, 63, 0, 120, 0, 109, 0, 108], {offset: 2})) {
 				return {
 					ext: 'xml',
 					mime: 'application/xml',
@@ -1499,7 +1460,7 @@ async function fileTypeStream(webStream, options) {
 			};
 		}
 
-		// Increase sample size from 32 to 256.
+		// Increase sample size from 12 to 256.
 		await tokenizer.peekBuffer(this.buffer, {length: Math.min(256, tokenizer.fileInfo.size), mayBeLess: true});
 
 		if (this.check([0x61, 0x63, 0x73, 0x70], {offset: 36})) {
@@ -1673,26 +1634,18 @@ async function fileTypeStream(webStream, options) {
 			};
 		}
 
-		if (this.check([0xFF, 0xFE])) { // UTF-16-BOM-LE
-			const encoding = 'utf-16le';
-			if (this.checkString('<?xml ', {offset: 2, encoding})) {
+		if (this.check([0xFF, 0xFE])) { // UTF-16-BOM-BE
+			if (this.check([60, 0, 63, 0, 120, 0, 109, 0, 108, 0], {offset: 2})) {
 				return {
 					ext: 'xml',
 					mime: 'application/xml',
 				};
 			}
 
-			if (this.check([0xFF, 0x0E], {offset: 2}) && this.checkString('SketchUp Model', {offset: 4, encoding})) {
+			if (this.check([0xFF, 0x0E, 0x53, 0x00, 0x6B, 0x00, 0x65, 0x00, 0x74, 0x00, 0x63, 0x00, 0x68, 0x00, 0x55, 0x00, 0x70, 0x00, 0x20, 0x00, 0x4D, 0x00, 0x6F, 0x00, 0x64, 0x00, 0x65, 0x00, 0x6C, 0x00], {offset: 2})) {
 				return {
 					ext: 'skp',
 					mime: 'application/vnd.sketchup.skp',
-				};
-			}
-
-			if (this.checkString('Windows Registry Editor Version 5.00\r\n', {offset: 2, encoding})) {
-				return {
-					ext: 'reg',
-					mime: 'application/x-ms-regedit',
 				};
 			}
 
@@ -1883,14 +1836,6 @@ async function fileTypeStream(webStream, options) {
 	}
 }
 
-const FileTypeParser = new FileMyParser()
-
-const supportedExtensions = new Set(extensions);
-const supportedMimeTypes = new Set(mimeTypes);
-
-module.exports = {
-    FileTypeParser,
-    supportedExtensions,
-    supportedMimeTypes
-    }
-    
+module.exports = FileTypeParser
+exports.supportedExtensions = new Set(extensions);
+exports.supportedMimeTypes = new Set(mimeTypes);

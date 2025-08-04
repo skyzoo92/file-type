@@ -1,28 +1,7 @@
 'use strict';
-
 const {StringType} = require('token-types');
 
-exports.stringToBytes(string, encoding) {
-	if (encoding === 'utf-16le') {
-		const bytes = [];
-		for (let index = 0; index < string.length; index++) {
-			const code = string.charCodeAt(index); // eslint-disable-line unicorn/prefer-code-point
-			bytes.push(code & 0xFF, (code >> 8) & 0xFF); // High byte
-		}
-
-		return bytes;
-	}
-
-	if (encoding === 'utf-16be') {
-		const bytes = [];
-		for (let index = 0; index < string.length; index++) {
-			const code = string.charCodeAt(index); // eslint-disable-line unicorn/prefer-code-point
-			bytes.push((code >> 8) & 0xFF, code & 0xFF); // Low byte
-		}
-
-		return bytes;
-	}
-
+exports.stringToBytes(string) {
 	return [...string].map(character => character.charCodeAt(0)); // eslint-disable-line unicorn/prefer-code-point
 }
 
