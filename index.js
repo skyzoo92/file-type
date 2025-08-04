@@ -67,15 +67,15 @@ const { FileTypeParser: DefaultFileTypeParser, reasonableDetectionSizeInBytes } 
 
 const FileTypeParser = new MyFileTypeParser()
 
-exports.fileTypeFromFile(path, options) {
+exports.fileTypeFromFile = (path, options) => {
 	return (new FileTypeParser(options)).fromFile(path, options);
 }
 
-exports.fileTypeFromStream(stream, options) {
+exports.fileTypeFromStream = (stream, options) => {
 	return (new FileTypeParser(options)).fromStream(stream);
 }
 
-exports.fileTypeStream(readableStream, options = {}) {
+exports.fileTypeStream = (readableStream, options = {}) => {
 	return new FileTypeParser(options).toDetectionStream(readableStream, options);
 }
 
