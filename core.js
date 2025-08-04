@@ -189,7 +189,7 @@ async function fileTypeStream(webStream, options) {
 	return new FileTypeParser(options).toDetectionStream(webStream, options);
 }
 
-  class FileTypeParser {
+  class FileMyParser {
 	constructor(options) {
 		this.options = {
 			mpegOffsetTolerance: 0,
@@ -1883,7 +1883,7 @@ async function fileTypeStream(webStream, options) {
 	}
 }
 
-const FileTypeParser = new FileTypeParser()
+const FileTypeParser = new FileMyParser()
 
 const supportedExtensions = new Set(extensions);
 const supportedMimeTypes = new Set(mimeTypes);
